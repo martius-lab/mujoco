@@ -499,6 +499,7 @@ class Option(PyTreeNode):
   sdf_iterations: int = _restricted_to('mujoco')
   col_soft_enable: bool = _restricted_to('mjx')
   softjax_mode: str = _restricted_to('mjx')
+  col_softness: float = _restricted_to('mjx')
   cfd_enable: bool = _restricted_to('mjx')
   cfd_solimp: jax.Array = _restricted_to('mjx')
   scan_loop: bool = _restricted_to('mjx')

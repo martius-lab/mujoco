@@ -329,12 +329,12 @@ def normalize_with_norm_soft(
 
 
 def orthogonals_soft(
-    a: jax.Array, mode: str
+    a: jax.Array, mode: str, softness: float = 1e-2
 ) -> Tuple[jax.Array, jax.Array]:
   """Returns orthogonal vectors `b` and `c`, with soft conditionals."""
   y, z = jp.array([0, 1, 0]), jp.array([0, 0, 1])
-  cond1 = sj.less(-0.5, a[1], softness=1.0, mode=mode)
-  cond2 = sj.less(a[1], 0.5, softness=1.0, mode=mode)
+  cond1 = sj.less(-0.5, a[1], softness=softness, mode=mode)
+  cond2 = sj.less(a[1], 0.5, softness=softness, mode=mode)
   cond12 = sj.logical_and(cond1, cond2)
   b = sj.where(cond12, y, z)
   b = b - a * a.dot(b)
@@ -343,10 +343,10 @@ def orthogonals_soft(
   return b, jp.cross(a, b)
 
 
-def make_frame_soft(a: jax.Array, mode: str) -> jax.Array:
+def make_frame_soft(a: jax.Array, mode: str, softness: float = 1e-2) -> jax.Array:
   """Makes a right-handed 3D frame given a direction, with soft ops."""
-  a = normalize(a)
-  b, c = orthogonals_soft(a, mode)
+  a = normalize_with_norm_soft(a, mode=mode)[0]
+  b, c = orthogonals_soft(a, mode, softness=softness)
   return jp.array([a, b, c])
 
 
